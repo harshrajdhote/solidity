@@ -1,5 +1,5 @@
 const assert = require('assert')
-const ganache = require('ganache-cli');
+const ganache = require('ganache-cli'); //web3 can be used for other purpose also
 const Web3 = require('web3'); //web3 imports constructor thats why it is capital W
 const web3 = new Web3(ganache.provider()); //ganache is netwrok and web3 is interface ganeche provider is intermediatery
 //web3 is instance
@@ -50,8 +50,20 @@ beforeEach(async ()=>{
 });
 describe('Inbox',()=>{ 
  it('deploys contract',()=>{
-    console.log(inbox);
+   // console.log(inbox);
+   assert.ok(inbox.options.address); //check for existence
+   
  });
+ it("has a default message",async ()=>{
+     const message = await inbox.methods.message().call(); //message call mehtod created by default
+     assert.equal(message,"Hi there!")
+ 
+ })
+ it('can change the message',async ()=>{
+    await inbox.methods.setMessage('bye').send({from:accounts[0]})//because for modification transcation executes
+    const message = await inbox.methods.message().call();
+    assert.equal(message,"bye"); 
+})
 });
 //ABI code is code js to run contract its encoded contract in js which is here provided with interface
 //thats why we are passing interface
